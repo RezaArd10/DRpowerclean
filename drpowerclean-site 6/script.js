@@ -45,7 +45,7 @@
     function setPos(x) {
       var r = wrap.getBoundingClientRect();
       var p = Math.max(2, Math.min(98, (x - r.left) / r.width * 100));
-      after.style.clipPath = 'inset(0 ' + (100 - p) + '% 0 0)';
+      after.style.clipPath = 'inset(0 0 0 ' + p + '%)';
       line.style.left = p + '%';
       knob.style.left = p + '%';
     }
@@ -60,5 +60,41 @@
 
   initSlider('slider1', 'after1', 'line1', 'knob1');
   initSlider('slider2', 'after2', 'line2', 'knob2');
+
+  // ── QUOTE FORM ──
+  var quoteForm = document.getElementById('quoteForm');
+  if (quoteForm) {
+    quoteForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var name    = document.getElementById('f-name').value.trim();
+      var phone   = document.getElementById('f-phone').value.trim();
+      var service = document.getElementById('f-service').value;
+      var address = document.getElementById('f-address').value.trim();
+      var message = document.getElementById('f-message').value.trim();
+
+      if (!name || !phone || !service) {
+        var btn = quoteForm.querySelector('.form-submit');
+        btn.textContent = 'Please fill in name, phone & service';
+        btn.style.background = '#c62828';
+        setTimeout(function () {
+          btn.textContent = 'Send Request \u2192';
+          btn.style.background = '';
+        }, 2800);
+        return;
+      }
+
+      var body = 'Quote Request \u2014 D&R Powerwashing Website\n\n' +
+                 'Name:    ' + name    + '\n' +
+                 'Phone:   ' + phone   + '\n' +
+                 'Service: ' + service + '\n' +
+                 'Address: ' + (address || 'Not provided') +
+                 (message ? '\n\nMessage:\n' + message : '');
+
+      var subj = 'Free Quote Request \u2014 ' + service;
+      window.location.href = 'mailto:' + addr +
+        '?subject=' + encodeURIComponent(subj) +
+        '&body='    + encodeURIComponent(body);
+    });
+  }
 
 })();
